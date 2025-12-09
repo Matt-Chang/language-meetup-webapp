@@ -997,6 +997,101 @@ p {
     animation-delay: 0.4s;
 }
 
+/* Star Rating */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.star-rating input {
+    display: none;
+}
+
+.star-rating label {
+    font-size: 2rem;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star-rating input:checked~label,
+.star-rating label:hover,
+.star-rating label:hover~label {
+    color: #FFD700;
+}
+
+/* Tooltip Styles */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.info-icon {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    border: 1.5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-family: monospace;
+}
+
+.tooltip-content {
+    visibility: hidden;
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 15px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.tooltip-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0 0;
+}
+
+.tooltip-content li {
+    margin-bottom: 5px;
+}
+
+.tooltip-content::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-container:hover .tooltip-content,
+.tooltip-container:active .tooltip-content,
+.tooltip-container:focus .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .mobile-menu-btn {
@@ -1035,5 +1130,12 @@ p {
 
     .info-block .highlight {
         font-size: 1.4rem;
+    }
+
+    .hero {
+        background-attachment: scroll;
+        background-position: center center;
+        /* Ensure it covers properly without zooming in too much */
+        background-size: cover;
     }
 }

@@ -167,6 +167,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Feedback Form Logic
+    const feedbackForm = document.getElementById('feedbackForm');
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const btn = feedbackForm.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = 'Sending...';
+            btn.disabled = true;
+
+            const name = document.getElementById('fb-name').value;
+            const topic = document.getElementById('fb-topic').value;
+            const message = document.getElementById('fb-message').value;
+            const ratingEl = document.querySelector('input[name="rating"]:checked');
+            const rating = ratingEl ? ratingEl.value : '0';
+
+            const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnfxdaWlJ7gD0PEX7JNzn7OMvV6H9AVqQBEIe6BsudItekBVN6BBlt0LtjeKusg9VL/exec';
+
+            const payload = {
+                type: 'feedback',
+                name: name,
+                topic: topic,
+                rating: rating,
+                message: message
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    alert('Thank you for your feedback!');
+                    feedbackForm.reset();
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Sent! (CORS mode)'); // Fallback
+                    feedbackForm.reset();
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                });
+        });
+    }
+
     function showSuccessMessage(name, date, table) {
         const modalContent = modal.querySelector('.modal-content');
         modalContent.innerHTML = `
@@ -293,4 +340,257 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dateInput) {
         dateInput.value = getNextThursday();
     }
+    // --- Gallery & Admin Logic ---
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnfxdaWlJ7gD0PEX7JNzn7OMvV6H9AVqQBEIe6BsudItekBVN6BBlt0LtjeKusg9VL/exec';
+
+    const GalleryManager = {
+        isAdmin: localStorage.getItem('site_admin') === 'true',
+
+        init() {
+            const galleryGrid = document.getElementById('gallery-grid');
+            if (galleryGrid) {
+                this.renderAdminUI();
+                this.loadPhotos();
+            }
+            this.bindEvents();
+        },
+
+        bindEvents() {
+            // Admin Login Link
+            const loginLink = document.getElementById('adminLoginLink');
+            const loginModal = document.getElementById('adminLoginModal');
+            const closeLogin = document.getElementById('closeAdminLogin');
+            const loginForm = document.getElementById('adminLoginForm');
+
+            if (loginLink) {
+                loginLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (this.isAdmin) {
+                        // Logout
+                        localStorage.removeItem('site_admin');
+                        location.reload();
+                    } else {
+                        loginModal.style.display = 'flex';
+                    }
+                });
+
+                // Updates link text if logged in
+                if (this.isAdmin) loginLink.textContent = 'Admin Logout';
+            }
+
+            if (closeLogin) closeLogin.onclick = () => loginModal.style.display = 'none';
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const pass = document.getElementById('adminPassword').value;
+                    // Simple hardcoded password for this static site
+                    if (pass === 'admin@hsinchu' || pass === '1234') {
+                        localStorage.setItem('site_admin', 'true');
+                        location.reload();
+                    } else {
+                        alert('Incorrect password');
+                    }
+                });
+            }
+
+            // Upload Logic
+            const addBtn = document.getElementById('addPhotoBtn');
+            const uploadModal = document.getElementById('uploadModal');
+            const closeUpload = document.getElementById('closeUpload');
+            const uploadForm = document.getElementById('uploadForm');
+
+            if (addBtn) addBtn.onclick = () => uploadModal.style.display = 'flex';
+            if (closeUpload) closeUpload.onclick = () => uploadModal.style.display = 'none';
+
+            if (uploadForm) {
+                uploadForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    await this.handleUpload();
+                });
+            }
+        },
+
+        renderAdminUI() {
+            if (!this.isAdmin) return;
+
+            // Show Floating Toolbar (or move it to header as requested)
+            const toolbar = document.getElementById('adminToolbar');
+            if (toolbar) toolbar.style.display = 'block';
+
+            // Also insert a button below the header text if requested
+            const bannerContainer = document.querySelector('.section-banner .container');
+            if (bannerContainer) {
+                const editArea = document.createElement('div');
+                editArea.style.marginTop = '15px';
+                editArea.innerHTML = `
+                    <button class="btn btn-secondary" onclick="document.getElementById('uploadModal').style.display='flex'">
+                        + Add New Photo
+                    </button>
+                `;
+                bannerContainer.appendChild(editArea);
+            }
+        },
+
+        loadPhotos() {
+            const grid = document.getElementById('gallery-grid');
+            if (!grid) return;
+
+            // Keep static photos initially, but append dynamic ones
+            // OR clear them if we want fully dynamic. 
+            // Result: Let's fetch and append to top knowing GAS returns newest first.
+
+            fetch(`${GOOGLE_SCRIPT_URL}?type=gallery`)
+                .then(res => res.json())
+                .then(photos => {
+                    if (!photos || !Array.isArray(photos)) return;
+
+                    // Create HTML for new photos
+                    const dynamicHtml = photos.map(photo => this.createCardHtml(photo)).join('');
+
+                    // Prepend to grid (so newest dynamic are first)
+                    grid.insertAdjacentHTML('afterbegin', dynamicHtml);
+                })
+                .catch(err => console.error('Gallery load error', err));
+        },
+
+        createCardHtml(photo) {
+            const deleteBtn = this.isAdmin
+                ? `<button onclick="GalleryManager.deletePhoto('${photo.deleteKey}')" class="delete-btn" style="background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; margin-top:5px; font-size:0.8rem;">Delete Output</button>`
+                : '';
+
+            // Format Date (Handle ISO string from GAS/Sheets)
+            let displayDate = photo.date;
+            try {
+                // If it looks like a full ISO string (e.g. 2025-10-22T16:00:00.000Z), convert to local date part
+                if (displayDate && displayDate.includes('T')) {
+                    const d = new Date(displayDate);
+                    // Use simple string manipulation or local date to avoid timezone shifts if possible, 
+                    // but standard 'toLocaleDateString' is usually safest for "what the user sees".
+                    // However, 2025-10-22T16:00Z IS 2025-10-23 in Taiwan.
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    displayDate = `${year}/${month}/${day}`;
+                }
+            } catch (e) {
+                console.log('Date parse error', e);
+            }
+
+            return `
+                <div class="gallery-card" style="position: relative;">
+                    <img src="${photo.url}" alt="Meetup Photo" loading="lazy">
+                    <div class="gallery-card-content">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                             <div class="gallery-date">${displayDate}</div>
+                             ${deleteBtn}
+                        </div>
+                        <p>${photo.id ? 'Community Photo' : 'Weekly Meetup'}</p>
+                    </div>
+                </div>
+            `;
+        },
+
+        async handleUpload() {
+            const fileInput = document.getElementById('photoFile');
+            const dateInput = document.getElementById('photoDate');
+            const status = document.getElementById('uploadStatus');
+
+            if (!fileInput.files[0]) return;
+
+            status.style.display = 'block';
+            status.textContent = 'Compressing & Uploading...';
+
+            try {
+                const base64 = await this.compressImage(fileInput.files[0]);
+
+                const payload = {
+                    type: 'upload',
+                    image: base64.split(',')[1], // Remove 'data:image/jpeg;base64,' prefix
+                    mimeType: 'image/jpeg',
+                    filename: 'upload-' + Date.now() + '.jpg',
+                    date: dateInput.value,
+                    name: 'Admin'
+                };
+
+                const res = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (data.result === 'success') {
+                    status.textContent = 'Done! Reloading...';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    throw new Error(data.error || 'Upload failed');
+                }
+            } catch (err) {
+                console.error(err);
+                status.textContent = 'Error: ' + err.message;
+            }
+        },
+
+        deletePhoto(key) {
+            if (!confirm('Are you sure you want to delete this photo?')) return;
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ type: 'delete', key: key })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.result === 'success') location.reload();
+                    else alert('Failed to delete');
+                })
+                .catch(err => alert('Error deleting photo'));
+        },
+
+        compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Max width/height
+                        const MAX_SIZE = 1000;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_SIZE) {
+                                height *= MAX_SIZE / width;
+                                width = MAX_SIZE;
+                            }
+                        } else {
+                            if (height > MAX_SIZE) {
+                                width *= MAX_SIZE / height;
+                                height = MAX_SIZE;
+                            }
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Compress to 0.7 quality jpeg
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                    img.onerror = reject;
+                };
+                reader.onerror = reject;
+            });
+        }
+    };
+
+    // Expose for global buttons (delete)
+    window.GalleryManager = GalleryManager;
+
+    // Run
+    GalleryManager.init();
 });

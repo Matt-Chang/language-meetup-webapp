@@ -84,7 +84,8 @@
 
     <section class="section">
         <div class="container">
-            <div class="gallery-page-grid">
+            <div id="gallery-grid" class="gallery-page-grid">
+                <!-- Static photos will be kept or replaced by JS logic -->
                 <!-- 2025/12/4 -->
                 <div class="gallery-card">
                     <img src="assets/meeting-2025-12-04.jpg" alt="Meetup on 2025/12/4" loading="lazy">
@@ -137,8 +138,58 @@
     <footer>
         <div class="container">
             <p>&copy; 2025 Hsinchu Language Meetup. All rights reserved.</p>
+            <p style="margin-top: 10px; font-size: 0.8rem;">
+                <a href="#" id="adminLoginLink" style="color: #999; text-decoration: none;">Admin Login</a>
+            </p>
         </div>
     </footer>
+
+    <!-- Admin Toolbar (Hidden by default) -->
+    <div id="adminToolbar" style="display: none; position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <button id="addPhotoBtn" class="btn btn-primary"
+            style="box-shadow: 0 4px 12px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 8px;">
+            <span>📸</span> Add Photo
+        </button>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-modal" id="closeAdminLogin">&times;</span>
+            <h2>Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Photo Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeUpload">&times;</span>
+            <h2>Add New Photo</h2>
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label for="photoFile">Choose Photo</label>
+                    <input type="file" id="photoFile" accept="image/*" required>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">Photo will be automatically optimized.
+                    </p>
+                </div>
+                <div class="form-group">
+                    <label for="photoDate">Date</label>
+                    <input type="date" id="photoDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Photo</button>
+                <p id="uploadStatus"
+                    style="text-align: center; margin-top: 10px; color: var(--primary-color); display: none;">
+                    Uploading... Please wait.</p>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

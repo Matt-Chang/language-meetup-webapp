@@ -186,7 +186,7 @@
         <div class="container">
             <div class="details-wrapper">
                 <div class="details-content">
-                    <h2>📍 Event Details</h2>
+                    <h2>Event Details</h2>
 
                     <div class="info-block">
                         <h3>📌 Current Location</h3>
@@ -198,11 +198,24 @@
                     <div class="info-grid">
                         <div class="info-item">
                             <h3>🕖 Time</h3>
-                            <p>Every Thursday, 7:00 – 10:00 PM</p>
+                            <p>Every Thursday,
+                                7:00 – 10:00 PM</p>
                             <span class="sub-text">(Come and go as you please)</span>
                         </div>
                         <div class="info-item">
-                            <h3>💰 Fee</h3>
+                            <h3>💰 Fee
+                                <span class="tooltip-container">
+                                    <span class="info-icon">ⓘ</span>
+                                    <div class="tooltip-content">
+                                        <strong>How the fee is used:</strong>
+                                        <ul>
+                                            <li>1️⃣ Venue, Tea & Snacks</li>
+                                            <li>2️⃣ Board Games & Tools</li>
+                                            <li>3️⃣ Support for Table Hosts</li>
+                                        </ul>
+                                    </div>
+                                </span>
+                            </h3>
                             <p>NTD 150 per person</p>
                             <span class="sub-text">(Shared tea and snacks included)</span>
                         </div>
@@ -210,26 +223,6 @@
                             <h3>💳 Payment</h3>
                             <p>Please pay at the front desk.</p>
                         </div>
-                    </div>
-
-                    <div class="fee-usage-box">
-                        <h3>💡 How the event fee is used:</h3>
-                        <ul>
-                            <li>
-                                <strong>1️⃣ 幫大家準備場地,茶飲,與小點心</strong>
-                                <p>👉 To provide the venue, shared tea, and snacks for everyone</p>
-                            </li>
-                            <li>
-                                <strong>2️⃣ 活動道具與桌遊的購入與更新</strong>
-                                <p>👉 To purchase and update activity materials and board games</p>
-                            </li>
-                            <li>
-                                <strong>3️⃣ 回饋給陪伴大家、帶領各桌的小桌長們！</strong>
-                                <p>👉 To give regular appreciation and support to our table hosts who lead
-                                    and accompany
-                                    everyone during the event!</p>
-                            </li>
-                        </ul>
                     </div>
 
                     <div class="cta-area">
@@ -240,6 +233,64 @@
                             Meetup</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feedback Section -->
+    <section id="feedback" class="section feedback-section" style="background: transparent; padding: 40px 0;">
+        <div class="container">
+            <div class="feedback-wrapper" style="max-width: 500px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <h2 style="font-size: 1.8rem; margin-bottom: 10px;">Help Us Improve</h2>
+                    <p style="color: #666; font-size: 0.9rem;">We value your feedback to make our community better.</p>
+                </div>
+
+                <form id="feedbackForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label for="fb-name" style="font-size: 0.85rem;">Name (Optional)</label>
+                            <input type="text" id="fb-name" name="name" placeholder="Your name"
+                                style="padding: 10px; font-size: 0.9rem;">
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 15px;">
+                            <label for="fb-topic" style="font-size: 0.85rem;">Table</label>
+                            <select id="fb-topic" name="topic" style="padding: 10px; font-size: 0.9rem;">
+                                <option value="general">General / First Time</option>
+                                <option value="free-talk">Free Talk</option>
+                                <option value="it">AI / IT</option>
+                                <option value="japanese">Japanese</option>
+                                <option value="board-game">Card Games</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="text-align: center; margin-bottom: 20px;">
+                        <div class="star-rating" style="justify-content: center;">
+                            <input type="radio" id="star5" name="rating" value="5" checked /><label for="star5"
+                                title="5 stars" style="font-size: 1.5rem;">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 stars"
+                                style="font-size: 1.5rem;">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 stars"
+                                style="font-size: 1.5rem;">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 stars"
+                                style="font-size: 1.5rem;">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 star"
+                                style="font-size: 1.5rem;">★</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <textarea id="fb-message" name="message" rows="3"
+                            placeholder="Any suggestions to make next time better?" required
+                            style="padding: 10px; font-size: 0.9rem; width: 100%; box-sizing: border-box;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-outline"
+                        style="width: 100%; box-sizing: border-box; border: 2px solid var(--primary-color); color: var(--primary-color); background: transparent; padding: 10px;">Send
+                        Feedback</button>
+                </form>
             </div>
         </div>
     </section>
