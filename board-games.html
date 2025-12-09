@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Game Tools | Hsinchu Language Meetup</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .games-hero {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            padding: 120px 0 60px;
+            text-align: center;
+        }
+
+        .games-hero h1 {
+            color: var(--white);
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .games-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .portal-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .portal-card {
+            background: var(--white);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .portal-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.jpg" alt="Hsinchu Language Meetup Logo" width="40" height="40">
+                <span>Hsinchu Language Meetup</span>
+            </a>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#tables">Tables</a></li>
+                <li><a href="index.html#gallery">Gallery</a></li>
+                <li><a href="index.html#join" class="btn-primary-nav">Join Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="games-hero">
+        <div class="container">
+            <h1>Board Game Tools</h1>
+            <p>Enhance your gaming experience with our digital companion apps and tools.</p>
+        </div>
+    </header>
+
+    <!-- Portal Link Section -->
+    <section class="portal-section">
+        <div class="container">
+            <div class="portal-card">
+                <div class="portal-icon">🎲</div>
+                <h2>Game Portal</h2>
+                <p style="margin-bottom: 30px;">Access our collection of board game helpers, timers, and scorekeepers.
+                </p>
+                <a href="https://hsinchu-language-meetup-579134451089.us-west1.run.app/" target="_blank"
+                    class="btn btn-primary btn-large">
+                    Launch Game Portal &rarr;
+                </a>
+                <p style="margin-top: 20px; font-size: 0.9rem; color: #666;">(Opens in a new tab)</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-logo">
+                <h3>Hsinchu Language Meetup</h3>
+                <p>Connecting Hsinchu through language and culture.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#tables">Tables</a></li>
+                    <li><a href="index.html#gallery">Gallery</a></li>
+                    <li><a href="index.html#join">Event Info</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h4>Follow Us</h4>
+                <div class="social-icons">
+                    <a href="https://www.facebook.com/profile.php?id=61577962754762" target="_blank"
+                        aria-label="Facebook">FB</a>
+                    <a href="https://www.instagram.com/hsinchu_language_meetup/" target="_blank"
+                        aria-label="Instagram">IG</a>
+                    <a href="https://www.threads.com/@hsinchu_language_meetup" target="_blank"
+                        aria-label="Threads">TH</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Hsinchu Language Meetup. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
