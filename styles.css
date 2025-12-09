@@ -882,7 +882,19 @@ p {
     border-radius: 10px;
     font-family: inherit;
     font-size: 1rem;
+    line-height: 1.5;
+    /* Normalize line height */
     transition: var(--transition);
+    appearance: none;
+    /* Remove default styling (esp. iOS shadow/rounding) */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #fff;
+    /* Ensure white background */
+    box-sizing: border-box;
+    /* Ensure padding doesn't affect width */
+    min-height: 50px;
+    /* Force minimum height for consistency */
 }
 
 .form-group input:focus,
