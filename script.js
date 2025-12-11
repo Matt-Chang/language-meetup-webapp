@@ -95,9 +95,90 @@ document.addEventListener('DOMContentLoaded', () => {
     const span = document.getElementsByClassName("close-modal")[0];
     const form = document.getElementById("joinForm");
 
+    // --- Table Capacity Logic ---
+    const TABLE_CAPACITIES = {
+        'it': 5,
+        'japanese': 10,
+        'board-game': 10,
+        'free-talk': 10
+    };
+
+    function updateTableSpots() {
+        const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnfxdaWlJ7gD0PEX7JNzn7OMvV6H9AVqQBEIe6BsudItekBVN6BBlt0LtjeKusg9VL/exec';
+        const nextThursday = getNextThursday();
+
+        // Reset options text while loading
+        const select = document.getElementById('table');
+        if (!select) return;
+
+        // Fetch latest data
+        fetch(`${scriptUrl}?type=latest&date=${nextThursday}`)
+            .then(response => response.json())
+            .then(data => {
+                const registrants = data.registrants || [];
+                const counts = {};
+                const uniqueSets = {};
+
+                // Initialize counts and sets
+                Object.keys(TABLE_CAPACITIES).forEach(key => {
+                    counts[key] = 0;
+                    uniqueSets[key] = new Set();
+                });
+
+                // Count registrations for next Thursday
+                registrants.forEach(reg => {
+                    if (reg.table && counts.hasOwnProperty(reg.table)) {
+                        // Deduplication: Normalize name
+                        const normalizedName = reg.name ? reg.name.trim().toLowerCase() : '';
+                        if (normalizedName && !uniqueSets[reg.table].has(normalizedName)) {
+                            uniqueSets[reg.table].add(normalizedName);
+                            counts[reg.table]++;
+                        }
+                    }
+                });
+
+                // Update Select Options
+                Array.from(select.options).forEach(option => {
+                    const type = option.value;
+                    if (TABLE_CAPACITIES.hasOwnProperty(type)) {
+                        const total = TABLE_CAPACITIES[type];
+                        const taken = counts[type];
+                        const left = Math.max(0, total - taken);
+
+                        // Clean previous count if exists
+                        const baseText = option.textContent.split(' (spot left:')[0];
+                        option.textContent = `${baseText} (spot left: ${left})`;
+
+                        // Optional: Disable if full
+                        if (left === 0) {
+                            option.disabled = true;
+                            option.textContent += ' - FULL';
+                        } else {
+                            option.disabled = false;
+                        }
+                    }
+                });
+
+                // Check Client-side Registration Status
+                const storageKey = `joined_event_${nextThursday}`;
+                const submitBtn = document.querySelector('#joinForm button[type="submit"]');
+                if (localStorage.getItem(storageKey) && submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = 'You are Registered';
+                    submitBtn.title = "You have already registered for this event.";
+                } else if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Join Event'; // Reset if needed
+                }
+            })
+            .catch(err => console.error('Error fetching capacity:', err));
+    }
+
+
     if (btn) {
         btn.onclick = function () {
             modal.style.display = "flex";
+            updateTableSpots(); // Update spots when opening
         }
     }
 
@@ -137,7 +218,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: date
             };
 
-            // 3. Show loading state
+            // 3. Check for double submission (Client-side)
+            const storageKey = `joined_event_${date}`;
+            if (localStorage.getItem(storageKey)) {
+                alert('You have already registered for this date! Please contact us if you need to change something.');
+                return;
+            }
+
+            // 4. Show loading state
             submitBtn.innerText = 'Submitting...';
             submitBtn.disabled = true;
 
@@ -148,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => {
                     console.log('Success!', response);
+                    localStorage.setItem(storageKey, 'true'); // Flag as registered
                     showSuccessMessage(name, date, table);
                 })
                 .catch(error => {
