@@ -146,8 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const left = Math.max(0, total - taken);
 
                         // Clean previous count if exists
-                        const baseText = option.textContent.split(' (spot left:')[0];
-                        option.textContent = `${baseText} (spot left: ${left})`;
+                        const baseText = option.textContent.split(' (spot left this week:')[0];
+                        option.textContent = `${baseText} (spot left this week: ${left})`;
 
                         // Optional: Disable if full
                         if (left === 0) {
