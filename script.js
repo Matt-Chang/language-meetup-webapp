@@ -160,15 +160,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Check Client-side Registration Status
-                const storageKey = `joined_event_${nextThursday}`;
                 const submitBtn = document.querySelector('#joinForm button[type="submit"]');
-                if (localStorage.getItem(storageKey) && submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerText = 'You are Registered';
-                    submitBtn.title = "You have already registered for this event.";
-                } else if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Join Event'; // Reset if needed
+                const dateInput = document.getElementById('date');
+
+                function checkRegistrationStatus() {
+                    if (!submitBtn || !dateInput) return;
+                    const selectedDate = dateInput.value;
+                    const storageKey = `joined_event_${selectedDate}`;
+
+                    if (localStorage.getItem(storageKey)) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerText = 'You are Registered';
+                        submitBtn.title = "You have already registered for this event.";
+                    } else {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'Join Event'; // Reset
+                        submitBtn.title = "";
+                    }
+                }
+
+                // Initial check
+                checkRegistrationStatus();
+
+                // Add listener for date changes
+                if (dateInput) {
+                    dateInput.addEventListener('change', checkRegistrationStatus);
                 }
             })
             .catch(err => console.error('Error fetching capacity:', err));
