@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Hsinchu Language Meetup</title>
+    <!-- Use same styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        .admin-section {
+            padding: 40px 0;
+            min-height: 80vh;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            position: relative;
+            /* Auto height to fit content */
+            width: 100%;
+            overflow: hidden;
+            /* Prevent spill */
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            height: 450px;
+            /* Taller chart */
+            width: 100%;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .controls input[type="date"] {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+
+        .btn-logout {
+            background: #ff4757;
+            color: white;
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Simple Header -->
+    <header class="navbar" style="position: relative;">
+        <div class="container navbar-content">
+            <a href="index.html" class="logo">HLM Admin</a>
+        </div>
+    </header>
+
+    <section class="section admin-section">
+        <div class="container">
+            <div id="debug-log"
+                style="background:#333; color:#0f0; padding:10px; margin-bottom:20px; font-family:monospace; font-size:12px; height:150px; overflow-y:scroll; border: 2px solid red;">
+                <strong>Debug Log (Visible by Default):</strong><br>
+            </div>
+            <div class="controls">
+                <button type="button" id="testChartBtn"
+                    style="background:orange; color:white; padding: 10px; cursor: pointer;">RUN DIAGNOSTIC TEST</button>
+                <label for="adminDate">Select Date for Bar Chart:</label>
+                <input type="date" id="adminDate">
+                <button id="refreshAdminBtn" class="btn btn-primary">Refresh Data</button>
+                <button id="logoutBtn" class="btn btn-logout">Logout</button>
+            </div>
+
+            <!-- Bar Chart: Registrations per Table -->
+            <div class="chart-container">
+                <h3>Registrations per Table</h3>
+                <div class="canvas-wrapper">
+                    <canvas id="tableChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Line Chart: Total Registrations Trend -->
+            <div class="chart-container">
+                <h3>Total Registrations Trend (History)</h3>
+                <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <label>From:</label>
+                    <input type="date" id="trendStart">
+                    <label>To:</label>
+                    <input type="date" id="trendEnd">
+                    <button id="loadTrendBtn" class="btn btn-primary" style="padding: 5px 15px;">Load Range</button>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container" style="text-align: center;">
+            <p>&copy; 2025 Hsinchu Language Meetup</p>
+        </div>
+    </footer>
+
+    <!-- Admin Logic -->
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>

@@ -461,27 +461,32 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         bindEvents() {
-            // Admin Login Link
-            const loginLink = document.getElementById('adminLoginLink');
+            // Admin Login Links (Footer & Nav)
+            const loginLinks = [
+                document.getElementById('adminLoginLink'),
+                document.getElementById('navAdminLink')
+            ];
             const loginModal = document.getElementById('adminLoginModal');
             const closeLogin = document.getElementById('closeAdminLogin');
             const loginForm = document.getElementById('adminLoginForm');
 
-            if (loginLink) {
-                loginLink.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (this.isAdmin) {
-                        // Logout
-                        localStorage.removeItem('site_admin');
-                        location.reload();
-                    } else {
-                        loginModal.style.display = 'flex';
-                    }
-                });
+            loginLinks.forEach(link => {
+                if (link) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (this.isAdmin) {
+                            // Logout
+                            localStorage.removeItem('site_admin');
+                            location.reload();
+                        } else {
+                            loginModal.style.display = 'flex';
+                        }
+                    });
 
-                // Updates link text if logged in
-                if (this.isAdmin) loginLink.textContent = 'Admin Logout';
-            }
+                    // Updates link text if logged in
+                    if (this.isAdmin) link.textContent = 'Admin Logout';
+                }
+            });
 
             if (closeLogin) closeLogin.onclick = () => loginModal.style.display = 'none';
 
@@ -492,7 +497,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Simple hardcoded password for this static site
                     if (pass === 'admin@hsinchu' || pass === '1234') {
                         localStorage.setItem('site_admin', 'true');
-                        location.reload();
+                        // Stay on page and refresh UI
+                        loginModal.style.display = 'none';
+                        // If on gallery, we might need to reload or re-render
+                        // If on gallery, we might need to reload or re-render
+                        if (document.getElementById('gallery-grid')) {
+                            location.reload();
+                        } else {
+                            // If elsewhere (like Home), redirect to Dashboard
+                            window.location.href = 'admin.html';
+                        }
                     } else {
                         alert('Incorrect password');
                     }
@@ -541,20 +555,41 @@ document.addEventListener('DOMContentLoaded', () => {
             const grid = document.getElementById('gallery-grid');
             if (!grid) return;
 
-            // Keep static photos initially, but append dynamic ones
-            // OR clear them if we want fully dynamic. 
-            // Result: Let's fetch and append to top knowing GAS returns newest first.
+            // 1. Extract Static Photos
+            const staticCards = Array.from(grid.querySelectorAll('.gallery-card')).map(card => {
+                const dateEl = card.querySelector('.gallery-date');
+                // Normalize date text (e.g. 2025/12/04 -> 2025-12-04) for sorting
+                const rawDate = dateEl ? dateEl.textContent.trim().replace(/\//g, '-') : '';
+                return {
+                    date: new Date(rawDate),
+                    html: card.outerHTML,
+                    isStatic: true
+                };
+            });
 
+            // 2. Fetch Dynamic Photos
             fetch(`${GOOGLE_SCRIPT_URL}?type=gallery`)
                 .then(res => res.json())
                 .then(photos => {
-                    if (!photos || !Array.isArray(photos)) return;
+                    if (!photos || !Array.isArray(photos)) photos = [];
 
-                    // Create HTML for new photos
-                    const dynamicHtml = photos.map(photo => this.createCardHtml(photo)).join('');
+                    // 3. Convert Dynamic to Objects with HTML
+                    const dynamicItems = photos.map(photo => {
+                        return {
+                            date: new Date(photo.date),
+                            html: this.createCardHtml(photo),
+                            isStatic: false
+                        };
+                    });
 
-                    // Prepend to grid (so newest dynamic are first)
-                    grid.insertAdjacentHTML('afterbegin', dynamicHtml);
+                    // 4. Merge
+                    const allItems = [...staticCards, ...dynamicItems];
+
+                    // 5. Sort Descending (Newest First)
+                    allItems.sort((a, b) => b.date - a.date);
+
+                    // 6. Re-render
+                    grid.innerHTML = allItems.map(item => item.html).join('');
                 })
                 .catch(err => console.error('Gallery load error', err));
         },
@@ -567,12 +602,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Format Date (Handle ISO string from GAS/Sheets)
             let displayDate = photo.date;
             try {
-                // If it looks like a full ISO string (e.g. 2025-10-22T16:00:00.000Z), convert to local date part
                 if (displayDate && displayDate.includes('T')) {
                     const d = new Date(displayDate);
-                    // Use simple string manipulation or local date to avoid timezone shifts if possible, 
-                    // but standard 'toLocaleDateString' is usually safest for "what the user sees".
-                    // However, 2025-10-22T16:00Z IS 2025-10-23 in Taiwan.
                     const year = d.getFullYear();
                     const month = String(d.getMonth() + 1).padStart(2, '0');
                     const day = String(d.getDate()).padStart(2, '0');
@@ -697,5 +728,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.GalleryManager = GalleryManager;
 
     // Run
+    // Run
     GalleryManager.init();
-});
+}); // End of pure DOMContentLoaded block
+
+// --- Admin Dashboard Logic moved to admin.js ---
+

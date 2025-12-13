@@ -74,6 +74,8 @@
                 <li><a href="#tables">Tables</a></li>
                 <li><a href="#gallery">Gallery</a></li>
                 <li><a href="#join" class="btn-primary-nav">Join Us</a></li>
+                <!-- Admin Link -->
+                <li><a href="#" id="navAdminLink">Admin</a></li>
             </ul>
         </div>
     </nav>
@@ -388,8 +390,27 @@
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 Hsinchu Language Meetup. All rights reserved.</p>
+            <a href="#" id="adminLoginLink"
+                style="color: #666; text-decoration: none; font-size: 0.8rem; margin-top: 5px; display: inline-block;">Admin
+                Login</a>
         </div>
     </footer>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 300px;">
+            <span class="close-modal" id="closeAdminLogin">&times;</span>
+            <h2 style="text-align: center; margin-bottom: 20px;">Admin Login</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" required
+                        style="width: 100%; padding: 8px; margin-top: 5px;">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 15px;">Login</button>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
