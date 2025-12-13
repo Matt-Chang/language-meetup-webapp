@@ -692,9 +692,24 @@ p {
 
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 30px;
     margin-bottom: 40px;
+}
+
+/* Specific layout for the 2 top items (Time, Fee) */
+.info-grid-2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+/* Make specific items span full width */
+.span-full {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+    .info-grid-2 {
+        grid-template-columns: 1fr;
+    }
 }
 
 .info-item {
@@ -1113,6 +1128,55 @@ p {
     color: #9CA3AF;
     font-size: 0.9rem;
 }
+
+/* Important Info Box Styling */
+.important-info-box {
+    background-color: #FFF7ED;
+    /* Light Orange */
+    border: 1px solid #FFEDD5;
+    border-radius: 16px;
+    padding: 30px;
+    text-align: left;
+}
+
+.important-info-box h3 {
+    text-align: center;
+    color: #EA580C;
+    /* Darker Orange */
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.important-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 700px;
+}
+
+.important-info-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
+    color: var(--text-color);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.important-info-list li::before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: absolute;
+    left: 5px;
+    top: -2px;
+}
+
 
 /* Animations */
 @keyframes fadeInUp {

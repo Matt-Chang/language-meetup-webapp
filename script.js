@@ -103,6 +103,16 @@ document.addEventListener('DOMContentLoaded', () => {
         'free-talk': 10
     };
 
+    // IT Table Notice
+    const tableSelect = document.getElementById('table');
+    if (tableSelect) {
+        tableSelect.addEventListener('change', function () {
+            if (this.value === 'it') {
+                alert("Please note that everyone is expected to share at least one thing related to IT news, skills, or research.");
+            }
+        });
+    }
+
     function updateTableSpots() {
         const scriptUrl = 'https://script.google.com/macros/s/AKfycbwnfxdaWlJ7gD0PEX7JNzn7OMvV6H9AVqQBEIe6BsudItekBVN6BBlt0LtjeKusg9VL/exec';
         const nextThursday = getNextThursday();
