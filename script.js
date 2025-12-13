@@ -205,6 +205,13 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.onclick = function () {
             modal.style.display = "flex";
             updateTableSpots(); // Update spots when opening
+
+            // Auto-fill email if available
+            const savedEmail = localStorage.getItem('user_email');
+            if (savedEmail) {
+                const emailInput = document.getElementById('email');
+                if (emailInput) emailInput.value = savedEmail;
+            }
         }
     }
 
@@ -220,7 +227,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Form Submission Handler
+    // Language Dropdown Logic
+    const langSelect = document.getElementById('language-select');
+    const otherLangInput = document.getElementById('other-language');
+
+    if (langSelect && otherLangInput) {
+        langSelect.addEventListener('change', function () {
+            if (this.value === 'Other') {
+                otherLangInput.style.display = 'block';
+                otherLangInput.required = true;
+            } else {
+                otherLangInput.style.display = 'none';
+                otherLangInput.required = false;
+                otherLangInput.value = ''; // Reset
+            }
+        });
+    }
+
     // Form Submission Handler
     if (form) {
         form.addEventListener('submit', function (e) {
@@ -233,6 +256,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = document.getElementById('name').value;
             const table = document.getElementById('table').value;
             const date = document.getElementById('date').value;
+            const email = document.getElementById('email').value;
+            const firstTime = document.getElementById('first-time').checked;
+
+            // Language Value Logic
+            let languages = '';
+            const selectedLang = document.getElementById('language-select').value;
+            if (selectedLang === 'Other') {
+                languages = document.getElementById('other-language').value;
+            } else {
+                languages = selectedLang;
+            }
+
+            // Save email for next time
+            if (email) localStorage.setItem('user_email', email);
 
             // 2. Prepare data for Google Sheets
             // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
@@ -241,7 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = {
                 name: name,
                 table: table,
-                date: date
+                date: date,
+                email: email,
+                first_time: firstTime ? 'Yes' : 'No',
+                languages: languages
             };
 
             // 3. Check for double submission (Client-side)

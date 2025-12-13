@@ -227,13 +227,13 @@
                         <div class="important-info-box span-full">
                             <h3>⚠️ Important Info</h3>
                             <ul class="important-info-list">
+                                <li>No events on 12/25, 1/1, 2/19</li>
                                 <li>Please do not bring your own food.</li>
-                                <li>Photographs and video recordings may be taken during the
-                                    event and used for future documentation and promotional purposes. If you prefer not
-                                    to appear, please inform the organizers.</li>
-                                <li>Be respectful and polite throughout the event. (Sales or
-                                    other intentions are not allowed.)</li>
                                 <li>Feel free to switch tables anytime during the event.</li>
+                                <li>Photos and videos taken may be used for promotion. Please inform organizers to opt
+                                    out.</li>
+                                <li>Be respectful and polite throughout the event. (Sales and promotional activities are
+                                    not allowed during the event.)</li>
                             </ul>
                         </div>
                     </div>
@@ -348,6 +348,34 @@
                 <div class="form-group">
                     <label for="name">Your Name</label>
                     <input type="text" id="name" name="name" required placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email <span style="font-weight: normal; font-size: 0.8em; color: #666;">(For
+                            attendance only. No spam.)</span></label>
+                    <input type="email" id="email" name="email" required placeholder="name@example.com">
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="first-time" name="first-time">
+                    <label for="first-time">Is this your first time?</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="language-select">Interested Languages <span
+                            style="font-weight: normal; font-size: 0.8em; color: #666;">(Optional)</span></label>
+                    <select id="language-select" name="language-select">
+                        <option value="" selected disabled>Select a language...</option>
+                        <option value="Korean">Korean</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="French">French</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="German">German</option>
+                        <option value="Chinese">Chinese</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="text" id="other-language" name="other-language" placeholder="Please specify..."
+                        style="display: none; margin-top: 10px;">
                 </div>
 
                 <div class="form-group">
