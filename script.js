@@ -545,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault();
                     const pass = document.getElementById('adminPassword').value;
                     // Simple hardcoded password for this static site
-                    if (pass === 'admin@hsinchu' || pass === '1234') {
+                    if (pass === 'admin99') {
                         localStorage.setItem('site_admin', 'true');
                         // Stay on page and refresh UI
                         loginModal.style.display = 'none';
