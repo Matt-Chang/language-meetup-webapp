@@ -352,7 +352,7 @@
 
                 <div class="form-group">
                     <label for="email">Email <span style="font-weight: normal; font-size: 0.8em; color: #666;">(For
-                            attendance only. No spam.)</span></label>
+                            attendance only.)</span></label>
                     <input type="email" id="email" name="email" required placeholder="name@example.com">
                 </div>
 
@@ -360,9 +360,19 @@
                     <input type="checkbox" id="first-time" name="first-time">
                     <label for="first-time">Is this your first time?</label>
                 </div>
+                <div class="form-group">
+                    <label for="table">Select a Table</label>
+                    <select id="table" name="table" required>
+                        <option value="" disabled selected>Choose a table...</option>
+                        <option value="free-talk">English - Free Talk Table</option>
+                        <option value="it">English - AI / IT Table</option>
+                        <option value="japanese">Japanese - Language Exchange Table</option>
+                        <option value="board-game">English - Card Game Table</option>
+                    </select>
+                </div>
 
                 <div class="form-group">
-                    <label for="language-select">Interested Languages <span
+                    <label for="language-select">Other Interested Languages?<span
                             style="font-weight: normal; font-size: 0.8em; color: #666;">(Optional)</span></label>
                     <select id="language-select" name="language-select">
                         <option value="" selected disabled>Select a language...</option>
@@ -376,17 +386,6 @@
                     </select>
                     <input type="text" id="other-language" name="other-language" placeholder="Please specify..."
                         style="display: none; margin-top: 10px;">
-                </div>
-
-                <div class="form-group">
-                    <label for="table">Select a Table</label>
-                    <select id="table" name="table" required>
-                        <option value="" disabled selected>Choose a table...</option>
-                        <option value="free-talk">English - Free Talk Table</option>
-                        <option value="it">English - AI / IT Table</option>
-                        <option value="japanese">Japanese - Language Exchange Table</option>
-                        <option value="board-game">English - Card Game Table</option>
-                    </select>
                 </div>
 
                 <div class="form-group">

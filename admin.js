@@ -172,8 +172,6 @@ function fetchAdminData(selectedDate) {
     fetch(`${scriptUrl}?type=latest&date=${selectedDate}`)
         .then(res => res.json())
         .then(data => {
-            // Log the raw data so we can see exactly what we got
-            // adminLog(`RAW DATA: ${JSON.stringify(data)}`);
             adminLog(`Data received. Count: ${data.registrants ? data.registrants.length : 0}`);
 
             if (typeof Chart === 'undefined') {
@@ -181,8 +179,13 @@ function fetchAdminData(selectedDate) {
                 return;
             }
 
-            updateBarChart(data.registrants || []);
-            // updateTrendChart(data.registrants || []); // Remove single point update for trend
+            // Future-Proofing: Process Data with Filters (currently just passing through)
+            // In the future, we can pass { venue: '...' } as a second arg
+            const processedData = processData(data.registrants || [], {});
+
+            updateBarChart(processedData);
+            updateNewVsReturningChart(processedData);
+            updateLanguageChart(processedData);
         })
         .catch(err => {
             console.error('Admin Fetch Error', err);
@@ -190,7 +193,18 @@ function fetchAdminData(selectedDate) {
         });
 }
 
+// Future-Proofing: Centralized Data Processing
+function processData(registrants, filters) {
+    // If we add venue later, we can filter here:
+    // if (filters.venue) {
+    //    return registrants.filter(r => r.venue === filters.venue);
+    // }
+    return registrants;
+}
+
 let barChartInstance = null;
+let newReturningChartInstance = null;
+let languageChartInstance = null;
 
 function updateBarChart(registrants) {
     // 1. Count occurrences dynamically
@@ -245,10 +259,86 @@ function updateBarChart(registrants) {
             }
         });
         adminLog(`Bar Chart rendered with ${labels.length} groups: ${labels.join(', ')}`);
+
     } catch (e) {
         console.error('BarChart Error:', e);
         adminLog(`BarChart Render Error: ${e.message}`);
     }
+}
+
+function updateNewVsReturningChart(registrants) {
+    const counts = { 'New': 0, 'Returning': 0 };
+
+    registrants.forEach(r => {
+        // "Yes" means First Time
+        if (r.first_time === 'Yes') {
+            counts['New']++;
+        } else {
+            counts['Returning']++;
+        }
+    });
+
+    const ctx = document.getElementById('newReturningChart');
+    if (!ctx) return;
+
+    if (newReturningChartInstance) newReturningChartInstance.destroy();
+
+    newReturningChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['New Members', 'Returning Members'],
+            datasets: [{
+                data: [counts['New'], counts['Returning']],
+                backgroundColor: ['#2ecc71', '#3498db'], // Green, Blue
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+
+function updateLanguageChart(registrants) {
+    const counts = {};
+
+    registrants.forEach(r => {
+        let lang = r.languages || 'Unknown';
+        // Simple normalization if needed
+        counts[lang] = (counts[lang] || 0) + 1;
+    });
+
+    const labels = Object.keys(counts);
+    const data = Object.values(counts);
+    const bgColors = labels.map((_, i) => getColor(i, 0.7));
+
+    const ctx = document.getElementById('languageChart');
+    if (!ctx) return;
+
+    if (languageChartInstance) languageChartInstance.destroy();
+
+    languageChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: bgColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
 }
 
 // Helper: predefined nice palette + modulo for infinite
